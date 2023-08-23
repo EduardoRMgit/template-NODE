@@ -12,6 +12,13 @@ const [mesa, setMesa] = useState();
 const [subTotal, setSubTotal] = useState();
 const [total, setTotal] = useState();
 
+const [editingFactura, setEditingFactura] = useState(null);
+const [editedIdMesero, setEditedIdMesero] = useState('');
+const [editedMesa, setEditedMesa] = useState('');
+const [editedSubTotal, setEditedSubTotal] = useState('');
+const [editedTotal, setEditedTotal] = useState('');
+
+
 
 
 const [showCannotDeleteModal, setShowCannotDeleteModal] = useState(false);
@@ -84,7 +91,38 @@ const [addFacturaError, setAddFacturaError] = useState('');
     const openDetailsModal = (factura) => {
         setSelectedFactura(factura);
     };
-  
+
+    const handleModify = (factura) => {
+      setEditingFactura(factura);
+      setEditedIdMesero(factura.idMesero);
+      setEditedMesa(factura.mesa);
+      setEditedSubTotal(factura.subTotal);
+      setEditedTotal(factura.total);
+      setShowModal(true); 
+    };
+    
+
+    const handleSaveEdit = async () => {
+      try {
+        const response = await axios.put(
+          `http://localhost:4000/api/v1/facturas/${editingFactura.idFactura}`,
+          {
+            idMesero: editedIdMesero,
+            mesa: editedMesa,
+            subTotal: editedSubTotal,
+            total: editedTotal,
+          }
+        );
+    
+        if (response.status === 200) {
+          fetchFacturas();
+          handleCloseModal();
+        }
+      } catch (error) {
+        console.error('Error al modificar la Factura:', error);
+      }
+    };
+    
 
   return (
     <div>
@@ -98,59 +136,59 @@ const [addFacturaError, setAddFacturaError] = useState('');
       </div>
       <br></br>
       <Modal show={showModal} onHide={handleCloseModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>Agregar Factura</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {addFacturaError && <p style={{ color: 'red' }}>{addFacturaError}</p>}
-        <Form>
-          <Form.Group controlId="idmesero">
-            <Form.Label>IdMesero</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese el ID del mesero"
-              value={idMesero}
-              onChange={(e) => setIdMesero(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group controlId="mesa">
-            <Form.Label>Número de Mesa</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese el número de mesa"
-              value={mesa}
-              onChange={(e) => setMesa(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group controlId="subotal">
-            <Form.Label>Subtotal</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese el subtotal"
-              value={subTotal}
-              onChange={(e) => setSubTotal(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group controlId="total">
-            <Form.Label>Total</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese el total"
-              value={total}
-              onChange={(e) => setTotal(e.target.value)}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleCloseModal}>
-          Cancelar
-        </Button>
-        <Button variant="primary" onClick={handleAddFactura}>
-          Agregar
-        </Button>
-      </Modal.Footer>
-    </Modal>
+        <Modal.Header closeButton>
+          <Modal.Title>{editingFactura ? 'Modificar Factura' : 'Agregar Factura'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {addFacturaError && <p style={{ color: 'red' }}>{addFacturaError}</p>}
+          <Form>
+            <Form.Group controlId="idmesero">
+              <Form.Label>IdMesero</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ingrese el ID del mesero"
+                value={editingFactura ? editedIdMesero : idMesero}
+                onChange={(e) => (editingFactura ? setEditedIdMesero(e.target.value) : setIdMesero(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group controlId="mesa">
+              <Form.Label>Número de Mesa</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ingrese el número de mesa"
+                value={editingFactura ? editedMesa : mesa}
+                onChange={(e) => (editingFactura ? setEditedMesa(e.target.value) : setMesa(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group controlId="subtotal">
+              <Form.Label>Subtotal</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Ingrese el subtotal"
+                value={editingFactura ? editedSubTotal : subTotal}
+                onChange={(e) => (editingFactura ? setEditedSubTotal(e.target.value) : setSubTotal(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group controlId="total">
+              <Form.Label>Total</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Ingrese el total"
+                value={editingFactura ? editedTotal : total}
+                onChange={(e) => (editingFactura ? setEditedTotal(e.target.value) : setTotal(e.target.value))}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={editingFactura ? handleSaveEdit : handleAddFactura}>
+            {editingFactura ? 'Guardar Cambios' : 'Agregar'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -175,6 +213,9 @@ const [addFacturaError, setAddFacturaError] = useState('');
             <td style={{ textAlign: 'center' }}>
                 <Button variant="info" style={{ marginRight: '10px' }} onClick={() => openDetailsModal(factura)}>
                   Ver Detalles
+                </Button>
+                <Button variant="success" style={{ marginRight: '10px' }} onClick={() => handleModify(factura)}>
+                  Modificar
                 </Button>
                 <Button
                   variant="danger"

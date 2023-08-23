@@ -21,6 +21,21 @@ const [montoTotal, setMontoTotal] = useState(0.0);
 const [idFactura, setIdFactura] = useState();
 
 
+const [editingCliente, setEditingCliente] = useState(null);
+const [editedNombre, setEditedNombre] = useState('');
+const [editedApellidos, setEditedApellidos] = useState('');
+const [editedRFC, setEditedRFC] = useState('');
+const [editedCalle, setEditedCalle] = useState('');
+const [editedNumExt, setEditedNumExt] = useState('');
+const [editedNumInt, setEditedNumInt] = useState('');
+const [editedColonia, setEditedColonia] = useState('');
+const [editedMunicipio, setEditedMunicipio] = useState('');
+const [editedEstado, setEditedEstado] = useState('');
+const [editedZipCode, setEditedZipCode] = useState('');
+const [editedMontoTotal, setEditedMontoTotal] = useState(0.0);
+const [editedIdFactura, setEditedIdFactura] = useState('');
+
+
 
 const [selectedCliente, setSelectedCliente] = useState(null);
 
@@ -114,6 +129,53 @@ const [addClienteError, setClienteError] = useState('');
     };
   
 
+    const handleModify = (cliente) => {
+      setEditingCliente(cliente);
+      setEditedNombre(cliente.nombre);
+      setEditedApellidos(cliente.apellidos);
+      setEditedRFC(cliente.rfc);
+      setEditedCalle(cliente.calle);
+      setEditedNumExt(cliente.numExt);
+      setEditedNumInt(cliente.numInt || ''); // Manejar el caso de null
+      setEditedColonia(cliente.colonia);
+      setEditedMunicipio(cliente.municipio);
+      setEditedEstado(cliente.estado);
+      setEditedZipCode(cliente.zipCode);
+      setEditedMontoTotal(cliente.montoTotal);
+      setEditedIdFactura(cliente.idFactura);
+      setShowModal(true); // Abre el modal de edición
+    };
+    
+
+    const handleSaveEdit = async () => {
+      try {
+        const response = await axios.put(
+          `http://localhost:4000/api/v1/clientes/${editingCliente.idCliente}`,
+          {
+            nombre: editedNombre,
+            apellidos: editedApellidos,
+            rfc: editedRFC,
+            calle: editedCalle,
+            numExt: editedNumExt,
+            numInt: editedNumInt,
+            colonia: editedColonia,
+            municipio: editedMunicipio,
+            estado: editedEstado,
+            zipCode: editedZipCode,
+            montoTotal: editedMontoTotal,
+            idFactura: editedIdFactura,
+          }
+        );
+    
+        if (response.status === 200) {
+          fetchClientes(); // Actualiza la lista de clientes
+          handleCloseModal(); // Cierra el modal
+        }
+      } catch (error) {
+        console.error('Error al modificar el cliente:', error);
+      }
+    };
+
   return (
     <div>
       <br></br>
@@ -125,39 +187,40 @@ const [addClienteError, setClienteError] = useState('');
         </Button>
       </div>
       <br></br>
-      <Modal show={showModal} onHide={handleCloseModal}>
+    <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar Cliente</Modal.Title>
+        <Modal.Title>{editingCliente ? 'Modificar Cliente' : 'Agregar Cliente'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {addClienteError && <p style={{ color: 'red' }}>{addClienteError}</p>}
         <Form>
+          <Form.Group controlId="nombre">
+            <Form.Label>Nombre</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el nombre"
+              value={editingCliente ? editedNombre : nombre}
+              onChange={editingCliente ? (e) => setEditedNombre(e.target.value) : (e) => setNombre(e.target.value)}
+            />
+          </Form.Group>
 
-        <Form.Group controlId="nombre">
-        <Form.Label>Nombre</Form.Label>
-        <Form.Control
-            type="text"
-            placeholder="Ingrese el nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-        />
-        </Form.Group>
         <Form.Group controlId="apellidos">
         <Form.Label>Apellidos</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese los apellidos"
-            value={apellidos}
-            onChange={(e) => setApellidos(e.target.value)}
+            value={editingCliente ? editedApellidos : apellidos}
+            onChange={editingCliente ? (e) => setEditedApellidos(e.target.value)  : (e) => setApellidos(e.target.value)}
         />
         </Form.Group>
+
         <Form.Group controlId="rfc">
         <Form.Label>RFC</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese el RFC"
-            value={rfc}
-            onChange={(e) => setRFC(e.target.value)}
+            value={editingCliente ? editedRFC : rfc}
+            onChange={editingCliente ? (e) => setEditedRFC(e.target.value)  : (e) => setRFC(e.target.value)}
             maxLength={13} 
         />
         {rfc.length !== 13 && (
@@ -166,76 +229,86 @@ const [addClienteError, setClienteError] = useState('');
             </Form.Text>
         )}
         </Form.Group>
+
         <Form.Group controlId="calle">
         <Form.Label>Calle</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese la calle"
-            value={calle}
-            onChange={(e) => setCalle(e.target.value)}
+            value={editingCliente ? editedCalle : calle}
+            onChange={editingCliente ? (e) => setEditedCalle(e.target.value)  : (e) => setCalle(e.target.value)}
         />
         </Form.Group>
+
         <Form.Group controlId="numExt">
         <Form.Label>Número Exterior</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese el número exterior"
-            value={numExt}
-            onChange={(e) => setNumExt(e.target.value)}
+            value={editingCliente ? editedNumExt : numExt}
+            onChange={editingCliente ? (e) => setEditedNumExt(e.target.value)  : (e) => setNumExt(e.target.value)}
         />
         </Form.Group>
+
         <Form.Group controlId="numInt">
         <Form.Label>Número Interior</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese el número interior"
-            value={numInt}
-            onChange={(e) => setNumInt(e.target.value)}
+            value={editingCliente ? editedNumInt : numInt}
+            onChange={editingCliente ? (e) => setEditedNumInt(e.target.value)  : (e) => setNumInt(e.target.value)}
         />
         </Form.Group>
+
         <Form.Group controlId="colonia">
         <Form.Label>Colonia</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese la colonia"
-            value={colonia}
-            onChange={(e) => setColonia(e.target.value)}
+            value={editingCliente ? editedColonia : colonia}
+            onChange={editingCliente ? (e) => setEditedColonia(e.target.value)  : (e) => setColonia(e.target.value)}
         />
         </Form.Group>
+
         <Form.Group controlId="municipio">
         <Form.Label>Municipio</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese el municipio"
-            value={municipio}
-            onChange={(e) => setMunicipio(e.target.value)}
+            value={editingCliente ? editedMunicipio : municipio}
+            onChange={editingCliente ? (e) => setEditedMunicipio(e.target.value)  : (e) => setMunicipio(e.target.value)}
         />
         </Form.Group>
+
+
         <Form.Group controlId="montoTotal">
         <Form.Label>Monto Total</Form.Label>
         <Form.Control
             type="number"
             placeholder="Ingrese el monto total"
-            value={montoTotal}
-            onChange={(e) => setMontoTotal(e.target.value)}
+            value={editingCliente ? editedMontoTotal : montoTotal}
+            onChange={editingCliente ? (e) => setEditedMontoTotal(e.target.value)  : (e) => setMontoTotal(e.target.value)}
         />
         </Form.Group>
+
+
         <Form.Group controlId="idFactura">
         <Form.Label>ID de Factura</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese el ID de la factura"
-            value={idFactura}
-            onChange={(e) => setIdFactura(e.target.value)}
+            value={editingCliente ? editedIdFactura : idFactura}
+            onChange={editingCliente ? (e) => setEditedIdFactura(e.target.value)  : (e) => setIdFactura(e.target.value)}
         />
         </Form.Group>
+
         <Form.Group controlId="estado">
         <Form.Label>Estado</Form.Label>
         <Form.Control
             type="text"
             placeholder="Ingrese el estado"
-            value={estado}
-            onChange={(e) => setEstado(e.target.value)}
+            value={editingCliente ? editedEstado : estado}
+            onChange={editingCliente ? (e) => setEditedEstado(e.target.value)  : (e) => setEstado(e.target.value)}
         />
         </Form.Group>
 
@@ -244,8 +317,8 @@ const [addClienteError, setClienteError] = useState('');
         <Form.Control
             type="text"
             placeholder="Ingrese el código postal"
-            value={zipCode}
-            onChange={(e) => setZipCode(e.target.value)}
+            value={editingCliente ? editedZipCode : zipCode}
+            onChange={editingCliente ? (e) => setEditedZipCode(e.target.value)  : (e) => setZipCode(e.target.value)}
             maxLength={5} 
         />
         {zipCode.length !== 5 && (
@@ -254,18 +327,23 @@ const [addClienteError, setClienteError] = useState('');
             </Form.Text>
         )}
         </Form.Group>
-        </Form>
 
+
+        </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleCloseModal}>
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleAddCliente}>
-          Agregar
+        <Button
+          variant="primary"
+          onClick={editingCliente ? handleSaveEdit : handleAddCliente}
+        >
+          {editingCliente ? 'Guardar Cambios' : 'Agregar'}
         </Button>
       </Modal.Footer>
     </Modal>
+
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -296,6 +374,9 @@ const [addClienteError, setClienteError] = useState('');
             <td style={{ textAlign: 'center' }}>
                 <Button variant="info" style={{ marginRight: '10px' }} onClick={() => openDetailsModal(cliente)}>
                   Ver Detalles
+                </Button>
+                <Button variant="success" style={{ marginRight: '10px' }} onClick={() => handleModify(cliente)}>
+                  Modificar
                 </Button>
                 <Button
                   variant="danger"

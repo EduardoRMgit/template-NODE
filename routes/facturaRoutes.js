@@ -67,5 +67,27 @@ try {
 }
 });
 
+// PUT
+router.put('/api/v1/facturas/:idFactura', async (req, res) => {
+    const idFactura = req.params.idFactura;
+  
+    try {
+      const updatedFactura = req.body;
+  
+      const [rowsAffected] = await Factura.update(updatedFactura, {
+        where: { idFactura }
+      });
+  
+      if (rowsAffected > 0) {
+        res.status(200).json({ message: 'Factura actualizada correctamente.' });
+      } else {
+        res.status(404).json({ message: 'Factura no encontrada :C.' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar la factura :C.' });
+    }
+  });
+
+
 
 module.exports = router;

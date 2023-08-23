@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Table } from 'react-bootstrap';
-import axios from 'axios';
-
-
+import { default as axios } from 'axios';
 const FacturaList = () => {
 const [facturas, setFacturas] = useState([]);
 const [showModal, setShowModal] = useState(false);
@@ -149,35 +147,72 @@ const [addFacturaError, setAddFacturaError] = useState('');
                 placeholder="Ingrese el ID del mesero"
                 value={editingFactura ? editedIdMesero : idMesero}
                 onChange={(e) => (editingFactura ? setEditedIdMesero(e.target.value) : setIdMesero(e.target.value))}
+                readOnly 
+                style={{ backgroundColor: '#f0f0f0', cursor: 'not-allowed' }}
               />
             </Form.Group>
+
             <Form.Group controlId="mesa">
               <Form.Label>Número de Mesa</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Ingrese el número de mesa"
                 value={editingFactura ? editedMesa : mesa}
-                onChange={(e) => (editingFactura ? setEditedMesa(e.target.value) : setMesa(e.target.value))}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (/^\d*$/.test(inputValue)) {
+                    if (editingFactura) {
+                      setEditedMesa(inputValue);
+                    } else {
+                      setMesa(inputValue);
+                    }
+                  }
+                }}
+                pattern="\d*"
+                title="Ingrese solo números"
               />
             </Form.Group>
             <Form.Group controlId="subtotal">
-              <Form.Label>Subtotal</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Ingrese el subtotal"
-                value={editingFactura ? editedSubTotal : subTotal}
-                onChange={(e) => (editingFactura ? setEditedSubTotal(e.target.value) : setSubTotal(e.target.value))}
-              />
-            </Form.Group>
-            <Form.Group controlId="total">
-              <Form.Label>Total</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Ingrese el total"
-                value={editingFactura ? editedTotal : total}
-                onChange={(e) => (editingFactura ? setEditedTotal(e.target.value) : setTotal(e.target.value))}
-              />
-            </Form.Group>
+            <Form.Label>Subtotal</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Ingrese el subtotal"
+              value={editingFactura ? editedSubTotal : subTotal}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                if (/^\d*\.?\d*$/.test(inputValue)) {
+                  if (editingFactura) {
+                    setEditedSubTotal(inputValue);
+                  } else {
+                    setSubTotal(inputValue);
+                  }
+                }
+              }}
+              pattern="\d*\.?\d*"
+              title="Ingrese un número válido"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="total">
+            <Form.Label>Total</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Ingrese el total"
+              value={editingFactura ? editedTotal : total}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                if (/^\d*\.?\d*$/.test(inputValue)) {
+                  if (editingFactura) {
+                    setEditedTotal(inputValue);
+                  } else {
+                    setTotal(inputValue);
+                  }
+                }
+              }}
+              pattern="\d*\.?\d*"
+              title="Ingrese un número válido"
+            />
+          </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>

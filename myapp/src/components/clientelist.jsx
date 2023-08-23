@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Table } from 'react-bootstrap';
-import axios from 'axios';
-
+import { default as axios } from 'axios';
 
 const ClienteList = () => {
 const [clientes, setClientes] = useState([]);
@@ -194,24 +193,44 @@ const [addClienteError, setClienteError] = useState('');
       <Modal.Body>
         {addClienteError && <p style={{ color: 'red' }}>{addClienteError}</p>}
         <Form>
-          <Form.Group controlId="nombre">
-            <Form.Label>Nombre</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese el nombre"
-              value={editingCliente ? editedNombre : nombre}
-              onChange={editingCliente ? (e) => setEditedNombre(e.target.value) : (e) => setNombre(e.target.value)}
-            />
-          </Form.Group>
+
+
+        <Form.Group controlId="nombre">
+          <Form.Label>Nombre</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Ingrese el nombre"
+            value={editingCliente ? editedNombre : nombre}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              if (/^[A-Za-z\s]*$/.test(inputValue)) {
+                if (editingCliente) {
+                  setEditedNombre(inputValue);
+                } else {
+                  setNombre(inputValue);
+                }
+              }
+            }}
+          />
+        </Form.Group>
 
         <Form.Group controlId="apellidos">
-        <Form.Label>Apellidos</Form.Label>
-        <Form.Control
+          <Form.Label>Apellidos</Form.Label>
+          <Form.Control
             type="text"
             placeholder="Ingrese los apellidos"
             value={editingCliente ? editedApellidos : apellidos}
-            onChange={editingCliente ? (e) => setEditedApellidos(e.target.value)  : (e) => setApellidos(e.target.value)}
-        />
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              if (/^[A-Za-z\s]*$/.test(inputValue)) {
+                if (editingCliente) {
+                  setEditedApellidos(inputValue);
+                } else {
+                  setApellidos(inputValue);
+                }
+              }
+            }}
+          />
         </Form.Group>
 
         <Form.Group controlId="rfc">
@@ -230,54 +249,99 @@ const [addClienteError, setClienteError] = useState('');
         )}
         </Form.Group>
 
-        <Form.Group controlId="calle">
-        <Form.Label>Calle</Form.Label>
-        <Form.Control
-            type="text"
-            placeholder="Ingrese la calle"
-            value={editingCliente ? editedCalle : calle}
-            onChange={editingCliente ? (e) => setEditedCalle(e.target.value)  : (e) => setCalle(e.target.value)}
-        />
-        </Form.Group>
+      <Form.Group controlId="calle">
+      <Form.Label>Calle</Form.Label>
+      <Form.Control
+        type="text"
+        placeholder="Ingrese la calle"
+        value={editingCliente ? editedCalle : calle}
+        onChange={(e) => {
+          const inputValue = e.target.value;
+          if (/^[A-Za-z\s]*$/.test(inputValue)) {
+            if (editingCliente) {
+              setEditedCalle(inputValue);
+            } else {
+              setCalle(inputValue);
+            }
+          }
+        }}
+      />
+    </Form.Group>
 
-        <Form.Group controlId="numExt">
-        <Form.Label>Número Exterior</Form.Label>
-        <Form.Control
-            type="text"
-            placeholder="Ingrese el número exterior"
-            value={editingCliente ? editedNumExt : numExt}
-            onChange={editingCliente ? (e) => setEditedNumExt(e.target.value)  : (e) => setNumExt(e.target.value)}
-        />
-        </Form.Group>
+    <Form.Group controlId="numExt">
+    <Form.Label>Número Exterior</Form.Label>
+    <Form.Control
+      type="text"
+      placeholder="Ingrese el número exterior"
+      value={editingCliente ? editedNumExt : numExt}
+      onChange={(e) => {
+        const inputValue = e.target.value;
+        if (/^\d*$/.test(inputValue)) {
+          if (editingCliente) {
+            setEditedNumExt(inputValue);
+          } else {
+            setNumExt(inputValue);
+          }
+        }
+      }}
+    />
+  </Form.Group>
 
-        <Form.Group controlId="numInt">
-        <Form.Label>Número Interior</Form.Label>
-        <Form.Control
-            type="text"
-            placeholder="Ingrese el número interior"
-            value={editingCliente ? editedNumInt : numInt}
-            onChange={editingCliente ? (e) => setEditedNumInt(e.target.value)  : (e) => setNumInt(e.target.value)}
-        />
-        </Form.Group>
+          <Form.Group controlId="numInt">
+            <Form.Label>Número Interior</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el número interior"
+              value={editingCliente ? editedNumInt : numInt}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                if (/^\d*$/.test(inputValue)) {
+                  if (editingCliente) {
+                    setEditedNumInt(inputValue);
+                  } else {
+                    setNumInt(inputValue);
+                  }
+                }
+              }}
+            />
+          </Form.Group>
 
-        <Form.Group controlId="colonia">
-        <Form.Label>Colonia</Form.Label>
-        <Form.Control
+          <Form.Group controlId="colonia">
+          <Form.Label>Colonia</Form.Label>
+          <Form.Control
             type="text"
             placeholder="Ingrese la colonia"
             value={editingCliente ? editedColonia : colonia}
-            onChange={editingCliente ? (e) => setEditedColonia(e.target.value)  : (e) => setColonia(e.target.value)}
-        />
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              if (/^[A-Za-z\s]*$/.test(inputValue)) {
+                if (editingCliente) {
+                  setEditedColonia(inputValue);
+                } else {
+                  setColonia(inputValue);
+                }
+              }
+            }}
+          />
         </Form.Group>
 
         <Form.Group controlId="municipio">
-        <Form.Label>Municipio</Form.Label>
-        <Form.Control
+          <Form.Label>Municipio</Form.Label>
+          <Form.Control
             type="text"
             placeholder="Ingrese el municipio"
             value={editingCliente ? editedMunicipio : municipio}
-            onChange={editingCliente ? (e) => setEditedMunicipio(e.target.value)  : (e) => setMunicipio(e.target.value)}
-        />
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              if (/^[A-Za-z\s]*$/.test(inputValue)) {
+                if (editingCliente) {
+                  setEditedMunicipio(inputValue);
+                } else {
+                  setMunicipio(inputValue);
+                }
+              }
+            }}
+          />
         </Form.Group>
 
 
@@ -299,34 +363,55 @@ const [addClienteError, setClienteError] = useState('');
             placeholder="Ingrese el ID de la factura"
             value={editingCliente ? editedIdFactura : idFactura}
             onChange={editingCliente ? (e) => setEditedIdFactura(e.target.value)  : (e) => setIdFactura(e.target.value)}
+            readOnly 
+            style={{ backgroundColor: '#f0f0f0', cursor: 'not-allowed' }}
         />
         </Form.Group>
 
         <Form.Group controlId="estado">
         <Form.Label>Estado</Form.Label>
         <Form.Control
-            type="text"
-            placeholder="Ingrese el estado"
-            value={editingCliente ? editedEstado : estado}
-            onChange={editingCliente ? (e) => setEditedEstado(e.target.value)  : (e) => setEstado(e.target.value)}
+          type="text"
+          placeholder="Ingrese el estado"
+          value={editingCliente ? editedEstado : estado}
+          onChange={(e) => {
+            const inputValue = e.target.value;
+            if (/^[A-Za-z\s]*$/.test(inputValue)) {
+              if (editingCliente) {
+                setEditedEstado(inputValue);
+              } else {
+                setEstado(inputValue);
+              }
+            }
+          }}
         />
-        </Form.Group>
+      </Form.Group>
 
-        <Form.Group controlId="zipCode">
-        <Form.Label>ZipCode</Form.Label>
-        <Form.Control
-            type="text"
-            placeholder="Ingrese el código postal"
-            value={editingCliente ? editedZipCode : zipCode}
-            onChange={editingCliente ? (e) => setEditedZipCode(e.target.value)  : (e) => setZipCode(e.target.value)}
-            maxLength={5} 
-        />
-        {zipCode.length !== 5 && (
-            <Form.Text className="text-danger">
-            El código postal debe de ser 5 caracteres exactamente.
-            </Form.Text>
-        )}
-        </Form.Group>
+
+      <Form.Group controlId="zipCode">
+      <Form.Label>ZipCode</Form.Label>
+      <Form.Control
+        type="text"
+        placeholder="Ingrese el código postal"
+        value={editingCliente ? editedZipCode : zipCode}
+        onChange={(e) => {
+          const inputValue = e.target.value;
+          if (/^\d*$/.test(inputValue) && inputValue.length <= 5) {
+            if (editingCliente) {
+              setEditedZipCode(inputValue);
+            } else {
+              setZipCode(inputValue);
+            }
+          }
+        }}
+        maxLength={5} 
+      />
+      {zipCode.length !== 5 && (
+        <Form.Text className="text-danger">
+          El código postal debe tener exactamente 5 caracteres.
+        </Form.Text>
+      )}
+    </Form.Group>
 
 
         </Form>

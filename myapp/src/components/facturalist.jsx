@@ -135,7 +135,7 @@ const [addFacturaError, setAddFacturaError] = useState('');
       <br></br>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{editingFactura ? 'Modificar Factura' : 'Agregar Factura'}</Modal.Title>
+          <Modal.Title>Factura</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {addFacturaError && <p style={{ color: 'red' }}>{addFacturaError}</p>}
@@ -147,8 +147,6 @@ const [addFacturaError, setAddFacturaError] = useState('');
                 placeholder="Ingrese el ID del mesero"
                 value={editingFactura ? editedIdMesero : idMesero}
                 onChange={(e) => (editingFactura ? setEditedIdMesero(e.target.value) : setIdMesero(e.target.value))}
-                readOnly 
-                style={{ backgroundColor: '#f0f0f0', cursor: 'not-allowed' }}
               />
             </Form.Group>
 

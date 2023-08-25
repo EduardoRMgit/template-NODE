@@ -14,6 +14,7 @@
   const [editingMesero, setEditingMesero] = useState(null); 
   const [editedNombre, setEditedNombre] = useState(''); 
   const [editedApellidos, setEditedApellidos] = useState('');
+  
 
     const fetchMeseros = async () => {
       try {
@@ -114,57 +115,55 @@
         </div>
         <br></br>
         <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>{editingMesero ? 'Modificar Mesero' : 'Agregar Mesero'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="nombre">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Ingrese el nombre del mesero"
-                value={editingMesero ? editedNombre : nombre}
-                onChange={(e) => {
-                  if (editingMesero) {
-                    setEditedNombre(e.target.value.replace(/[^A-Za-z ]/g, '')); // Solo letras y espacios
-                  } else {
-                    setNombre(e.target.value.replace(/[^A-Za-z ]/g, '')); // Solo letras y espacios
-                  }
-                }}
-                pattern="[A-Za-z ]+"
-                title="Ingrese solo letras y espacios"
-              />
-            </Form.Group>
+  <Modal.Header closeButton>
+    <Modal.Title>
+      Mesero
+    </Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Form.Group controlId="nombre">
+        <Form.Label>Nombre</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Ingrese el nombre del mesero"
+          value={editingMesero ? editedNombre : nombre}
+          onChange={(e) => {
+            if (editingMesero) {
+              setEditedNombre(e.target.value.replace(/[^A-Za-z ]/g, ''));
+            } else {
+              setNombre(e.target.value.replace(/[^A-Za-z ]/g, ''));
+            }
+          }}
+        />
+      </Form.Group>
+      <Form.Group controlId="apellidos">
+        <Form.Label>Apellidos</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Ingrese los apellidos del mesero"
+          value={editingMesero ? editedApellidos : apellidos}
+          onChange={(e) => {
+            if (editingMesero) {
+              setEditedApellidos(e.target.value.replace(/[^A-Za-z ]/g, ''));
+            } else {
+              setApellidos(e.target.value.replace(/[^A-Za-z ]/g, ''));
+            }
+          }}
+        />
+      </Form.Group>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={handleCloseModal}>
+      Cancelar
+    </Button>
+    <Button variant="primary" onClick={editingMesero ? handleSaveEdit : handleAddMesero}>
+      {editingMesero ? 'Guardar Cambios' : 'Agregar'}
+    </Button>
+  </Modal.Footer>
+</Modal>
 
-            <Form.Group controlId="apellidos">
-              <Form.Label>Apellidos</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Ingrese los apellidos del mesero"
-                value={editingMesero ? editedApellidos : apellidos}
-                onChange={(e) => {
-                  if (editingMesero) {
-                    setEditedApellidos(e.target.value.replace(/[^A-Za-z ]/g, '')); 
-                  } else {
-                    setApellidos(e.target.value.replace(/[^A-Za-z ]/g, '')); 
-                  }
-                }}
-                pattern="[A-Za-z ]+"
-                title="Ingrese solo letras y espacios"
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={editingMesero ? handleSaveEdit : handleAddMesero}>
-            {editingMesero ? 'Guardar Cambios' : 'Agregar'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
         <Table striped bordered hover>
           <thead>
             <tr>

@@ -188,13 +188,11 @@ const [addClienteError, setClienteError] = useState('');
       <br></br>
     <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
-        <Modal.Title>{editingCliente ? 'Modificar Cliente' : 'Agregar Cliente'}</Modal.Title>
+        <Modal.Title>Cliente</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {addClienteError && <p style={{ color: 'red' }}>{addClienteError}</p>}
         <Form>
-
-
         <Form.Group controlId="nombre">
           <Form.Label>Nombre</Form.Label>
           <Form.Control
@@ -363,8 +361,6 @@ const [addClienteError, setClienteError] = useState('');
             placeholder="Ingrese el ID de la factura"
             value={editingCliente ? editedIdFactura : idFactura}
             onChange={editingCliente ? (e) => setEditedIdFactura(e.target.value)  : (e) => setIdFactura(e.target.value)}
-            readOnly 
-            style={{ backgroundColor: '#f0f0f0', cursor: 'not-allowed' }}
         />
         </Form.Group>
 
